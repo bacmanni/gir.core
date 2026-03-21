@@ -1,0 +1,14 @@
+<Project>  
+  <ItemDefinitionGroup>
+    <UiEmbeddedResource>
+      <Link>%(Filename).ui</Link>
+    </UiEmbeddedResource>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <None Remove="@(UiEmbeddedResource)" />
+    <EmbeddedResource Include="@(UiEmbeddedResource)">
+      <LogicalName>%(Filename)%(Extension)</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
