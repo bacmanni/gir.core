@@ -10,6 +10,6 @@
     <None Update="GirCore.Gtk-4.0.Integration.targets" Pack="true" PackagePath="buildTransitive" />
     <None Update="Compiler\Blueprint.Build.props" Pack="true" PackagePath="buildTransitive" />
     <None Update="Compiler\Blueprint.Build.targets" Pack="true" PackagePath="buildTransitive" />
-    <None Update="Compiler\Ui.Build.props" Pack="true" PackagePath="buildTransitive" />
+    <None Update="Compiler\Template.Build.props" Pack="true" PackagePath="buildTransitive" />
   </ItemGroup>
 </Project>

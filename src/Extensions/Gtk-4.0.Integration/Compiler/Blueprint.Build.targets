@@ -39,16 +39,16 @@
     </Task>
   </UsingTask>
 
-  <Target Name="CompileBlueprints" BeforeTargets="CoreCompile" Inputs="@(BlueprintEmbeddedResource)" Outputs="@(BlueprintEmbeddedResource->'%(CompiledOutput)')">
+  <Target Name="CompileBlueprints" 
+          BeforeTargets="CoreCompile" 
+          Inputs="@(BlueprintEmbeddedResource)" 
+          Outputs="@(BlueprintEmbeddedResource->'%(CompiledOutput)')">
     <ItemGroup>
       <_BlueprintFilesToCompile Include="@(BlueprintEmbeddedResource)" />
     </ItemGroup>
-
-    <CompileBlueprint
-      BlueprintFile="%(_BlueprintFilesToCompile.Identity)"
-      OutputFile="%(_BlueprintFilesToCompile.CompiledOutput)"
-      CompilerPath="$(BlueprintCompiler)"
-      Condition="'@(_BlueprintFilesToCompile)' != ''" />
+    
+    <Message Importance="high" Text="Compiling blueprint %(_BlueprintFilesToCompile.Identity)" />
+    <Exec WorkingDirectory="$(MSBuildProjectDirectory)" Command="$(BlueprintCompiler) compile --output %(_BlueprintFilesToCompile.CompiledOutput) %(_BlueprintFilesToCompile.Identity)" />
   </Target>
 
   <Target Name="CleanBlueprintOutput" BeforeTargets="CoreClean">
