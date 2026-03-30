@@ -7,13 +7,13 @@ internal class PointerArray : FieldConverter
         return field.AnyTypeOrCallback.TryPickT0(out var anyType, out _) && anyType.IsArray<GirModel.Pointer>();
     }
 
-    public RenderableField Convert(GirModel.Field field)
+    public RenderableField[] Convert(GirModel.Field field)
     {
-        return new RenderableField(
+        return [new RenderableField(
             Name: Model.Field.GetName(field),
             Attribute: GetAttribute(field),
             NullableTypeName: GetNullableTypeName(field)
-        );
+        )];
     }
 
     private static string? GetAttribute(GirModel.Field field)

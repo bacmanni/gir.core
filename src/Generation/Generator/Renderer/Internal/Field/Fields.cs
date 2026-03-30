@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace Generator.Renderer.Internal;
 
@@ -49,11 +50,16 @@ internal static class Fields
 
     public static string Render(GirModel.Field field)
     {
-        var renderableField = GetRenderableField(field);
-        return $"{renderableField.Attribute} public {renderableField.NullableTypeName} {renderableField.Name};";
+        var renderableFields = GetRenderableField(field);
+        var sb = new StringBuilder();
+
+        foreach (var renderableField in renderableFields)
+            sb.AppendLine($"{renderableField.Attribute} public {renderableField.NullableTypeName} {renderableField.Name};");
+
+        return sb.ToString();
     }
 
-    public static Field.RenderableField GetRenderableField(GirModel.Field field)
+    public static Field.RenderableField[] GetRenderableField(GirModel.Field field)
     {
         foreach (var converter in converters)
             if (converter.Supports(field))
