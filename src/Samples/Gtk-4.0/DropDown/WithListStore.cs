@@ -151,7 +151,6 @@ public partial class WithListStore
             OnSelectedItemChanged(listItem);
         });
 
-        listItem.SetData("connection", IntPtr.Zero);
         OnSelectedItemChanged(listItem);
     }
 
