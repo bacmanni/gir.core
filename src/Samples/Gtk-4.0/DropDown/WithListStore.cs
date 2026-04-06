@@ -63,7 +63,7 @@ public partial class WithListStore
     [MemberNotNull(nameof(_listStore))]
     private void CreateModel()
     {
-        _listStore = Gio.ListStore.New(StringHolder.GetGType());
+        _listStore = Gio.ListStore.New<StringHolder>();
         _listStore.Append(StringHolder.New("Deskop", "user-desktop-symbolic", "Deskop Folder"));
         _listStore.Append(StringHolder.New("Home", "user-home-symbolic", "Home Folder"));
         _listStore.Append(StringHolder.New("Trash", "user-trash-symbolic", "Trash Folder"));
