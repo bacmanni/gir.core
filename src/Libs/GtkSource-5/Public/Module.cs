@@ -1,8 +1,12 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace GtkSource;
 
 public static class Module
 {
     private static bool IsInitialized;
+    private static DllImportResolver? CustomDllImportResolver;
 
     /// <summary>
     /// Initialize the <c>GtkSource</c> module.
@@ -28,10 +32,30 @@ public static class Module
 
         Gtk.Module.Initialize();
 
-        Internal.ImportResolver.RegisterAsDllImportResolver();
+        NativeLibrary.SetDllImportResolver(typeof(Module).Assembly, CustomDllImportResolver ?? Internal.ImportResolver.Resolve);
         Internal.TypeRegistration.RegisterTypes();
         Internal.Functions.Init();
 
         IsInitialized = true;
+    }
+
+    /// <summary>
+    /// Set a custom DllImportResolver. This disables the automatic loading of native binaries for
+    /// GtkSource. If the given DllImportResolver receives the library name "GtkSource" it has to return a pointer
+    /// to the desired native GtkSource binary.
+    /// </summary>
+    /// <remarks>
+    /// Please be aware that using this API means you are out of the officially supported area
+    /// as you are able to combine GirCore with some binary the package was not build for. Please consider
+    /// to generate a custom GirCore package which exactly matches your binary.
+    /// </remarks>
+    /// <param name="customDllImportResolver">Custom DllImportResolver to use.</param>
+    /// <exception cref="Exception">Throws an exception if the method is called after module initialization.</exception>
+    public static void SetCustomDllImportResolver(DllImportResolver customDllImportResolver)
+    {
+        if (IsInitialized)
+            throw new Exception("Can't set a custom DllImportResolver after initialization is done.");
+
+        CustomDllImportResolver = customDllImportResolver;
     }
 }
