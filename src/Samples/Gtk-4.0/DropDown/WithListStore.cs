@@ -43,6 +43,8 @@ public partial class WithListStore
 [GObject.Subclass<Gtk.DropDown>]
 public partial class MyDropDown
 {
+    private readonly List<DropDownItem> _dropDownItems = new();
+    
     partial void Initialize()
     {
         // Factory for presenting the selected item.
@@ -77,7 +79,7 @@ public partial class MyDropDown
         listItem?.SetChild(SelectedDropDownItem.NewWithProperties([]));
     }
 
-    private static void OnBindSelectedItem(Gtk.SignalListItemFactory sender, Gtk.SignalListItemFactory.BindSignalArgs args)
+    private void OnBindSelectedItem(Gtk.SignalListItemFactory sender, Gtk.SignalListItemFactory.BindSignalArgs args)
     {
         var listItem = args.Object as Gtk.ListItem;
         if (listItem?.GetItem() is not DropDownData data)
@@ -85,12 +87,20 @@ public partial class MyDropDown
 
         var item = listItem.GetChild() as SelectedDropDownItem;
         item?.Bind(data);
+
+        foreach (var dropDownItem in _dropDownItems)
+            dropDownItem.SetCheckmarkVisible(false);
+        
+        _dropDownItems[(int)Selected].SetCheckmarkVisible(true);
     }
 
-    private static void OnSetupListItem(Gtk.SignalListItemFactory factory, Gtk.SignalListItemFactory.SetupSignalArgs args)
+    private void OnSetupListItem(Gtk.SignalListItemFactory factory, Gtk.SignalListItemFactory.SetupSignalArgs args)
     {
+        var dropDownItem = DropDownItem.NewWithProperties([]);
+        _dropDownItems.Add(dropDownItem);
+        
         var listItem = args.Object as Gtk.ListItem;
-        listItem?.SetChild(DropDownItem.NewWithProperties([]));
+        listItem?.SetChild(dropDownItem);
     }
 
     private void OnBindListItem(Gtk.SignalListItemFactory sender, Gtk.SignalListItemFactory.BindSignalArgs args)
@@ -101,19 +111,6 @@ public partial class MyDropDown
 
         var item = listItem.GetChild() as DropDownItem;
         item?.Bind(data);
-
-        SelectedItemPropertyDefinition.Notify(this, (_, _) =>
-        {
-            OnSelectedItemChanged(listItem);
-        });
-
-        OnSelectedItemChanged(listItem);
-    }
-
-    private void OnSelectedItemChanged(Gtk.ListItem listItem)
-    {
-        var item = listItem.GetChild() as DropDownItem;
-        item?.SetCheckmarkVisible(GetSelectedItem() == listItem.Item);
     }
 
     [GObject.Subclass<Gtk.Box>]
